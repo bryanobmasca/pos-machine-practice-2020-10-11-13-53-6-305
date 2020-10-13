@@ -1,11 +1,12 @@
 # Print Receipt
 
 ## loadAllItemsInfo
+```java
 P - 20mins
 D - 60mins
 C - Not familiar with java syntax
 A - Need to read and practice more about the List in Java and the for loop
-
+```
 
 ## calculate Receipt
 
