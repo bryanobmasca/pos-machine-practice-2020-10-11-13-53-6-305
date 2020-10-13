@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Receipt {
-    private List<String> itemDetail = new ArrayList<>();
-    private double totalPrice;
-    public Receipt(List<String> itemDetail, double totalPrice){
+    private List<Item> itemDetail = new ArrayList<>();
+    private int totalPrice;
+    public Receipt(List<Item> itemDetail, int totalPrice){
         this.itemDetail = itemDetail;
         this.totalPrice = totalPrice;
     }
 
-    public List<String> getItemDetail(){
+    public List<Item> getItemDetail(){
         return itemDetail;
     }
 
-    public double getTotalPrice() {
+    public int getTotalPrice() {
         return totalPrice;
     }
+
 }

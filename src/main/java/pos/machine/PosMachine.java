@@ -10,22 +10,54 @@ public class PosMachine {
     public String printReceipt(List<String> barcodes) {
         List itemsWithDetail = loadAllItemsInfo(barcodes);
         Receipt receipt = calculateReceipt(itemsWithDetail);
-        return null;
+        String receiptMessage = createReceipt(receipt);
+        return receiptMessage;
+    }
+
+    private String createReceipt(Receipt receipt) {
+        String receiptMessage = "***<store earning no money>Receipt***\n";
+
+        for (Item item : receipt.getItemDetail()) {
+            receiptMessage += "Name: " + item.getName()
+                    + ", Quantity: " + item.getQuantity()
+                    + ", Unit price: " + item.getPrice() + " (yuan)"
+                    + ", Subtotal: " + item.getSubtotal() + " (yuan)"
+                    + "\n";
+        }
+        receiptMessage += "----------------------\n"
+                + "Total: " + receipt.getTotalPrice() + " (yuan)\n"
+                + "**********************";
+
+        return receiptMessage;
     }
 
     private Receipt calculateReceipt(List itemsWithDetail) {
         List itemsWithSubTotal = calculateSubTotal(itemsWithDetail);
-        return null;
+        int totalPrice = calculateTotal(itemsWithSubTotal);
+        Receipt receipt = new Receipt(itemsWithSubTotal,totalPrice);
+        return receipt;
     }
 
-    private List calculateSubTotal(List itemsWithDetail) {
-        List<Item> itemWithSubtotal = new ArrayList<>();
+    private int calculateTotal(List<Item> itemsWithSubTotal) {
+        int totalPrice = 0;
+        for(Item item : itemsWithSubTotal){
+            totalPrice += item.getSubtotal();
+        }
+        return totalPrice;
+    }
 
-        return null;
+    private List calculateSubTotal(List<Item> itemsWithDetail) {
+        List<Item> itemWithSubtotal = itemsWithDetail.stream().collect(Collectors.toList());
+
+        for( Item subtotal : itemWithSubtotal){
+            subtotal.setSubtotal(subtotal.getPrice(),subtotal.getQuantity());
+        }
+
+        return itemWithSubtotal;
     }
 
     private List loadAllItemsInfo(List<String> barcodes) {
-        List<Item> itemWithDetails = new ArrayList<>();
+        List<Item> itemWithDetails = new ArrayList<Item>();
         List<String> distinctBarCodes = new ArrayList<>();
         distinctBarCodes = barcodes.stream()
                 .distinct()
@@ -36,7 +68,7 @@ public class PosMachine {
                     .filter( b -> b.getBarcode().equals(barcode))
                     .findFirst().get();
 
-            itemWithDetails.add(new Item(barcode, itemInfo.getName(), itemInfo.getPrice(), Collections.frequency(barcodes,barcode)));
+            itemWithDetails.add(new Item(itemInfo.getName(), itemInfo.getPrice(), Collections.frequency(barcodes,barcode),0 ));
         }
         return itemWithDetails;
     }
